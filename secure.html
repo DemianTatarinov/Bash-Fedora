@@ -2,274 +2,52 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Безопасная передача данных — Демьян Татаринов</title>
+    <title>Безопасная передача</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        @import url('https://fonts.cdnfonts.com/css/neue-machina');
-
-        :root {
-            --bg: #e4e7eb;
-            --surface: #ffffff;
-            --border: #cbd5e1;
-            --text-main: #1a1f26;
-            --text-muted: #475569;
-            --accent: #1e293b;
-            --tg-color: #24A1DE;
-            --success-bg: #f0fdf4;
-            --success-border: #bbf7d0;
-            --success-text: #166534;
-            --error-bg: #fef2f2;
-            --error-border: #fecaca;
-            --error-text: #991b1b;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 24px;
-        }
-
-        /* Динамичный фон как на главном сайте */
-        .bg-grid-pattern {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;
-        }
-        .bg-svg-logo {
-            position: absolute; fill: rgba(43, 56, 76, 0.04); user-select: none; pointer-events: none;
-        }
-        .logo-eagle { width: 35vw; height: 35vw; top: -5%; right: -10%; transform: rotate(12deg); }
-        .logo-doc { width: 40vw; height: 40vw; bottom: -10%; left: -10%; transform: rotate(-15deg); }
-
-        .secure-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-            position: relative;
-            z-index: 1;
-        }
-
-        .top-notice {
-            font-family: 'Neue Machina', monospace;
-            font-size: 0.75rem;
-            color: var(--success-text);
-            background: var(--success-bg);
-            border: 1px solid var(--success-border);
-            padding: 8px 14px;
-            border-radius: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.02em;
-            margin-bottom: 24px;
-            display: inline-flex;
-            font-weight: 700;
-        }
-
-        h1 {
-            font-family: 'Neue Machina', monospace;
-            font-weight: 700;
-            font-size: 1.8rem;
-            line-height: 1.2;
-            color: var(--text-main);
-            margin-bottom: 12px;
-            letter-spacing: -0.02em;
-        }
-
-        p.subtitle {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            margin-bottom: 32px;
-            line-height: 1.5;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 18px 20px;
-            font-size: 1.1rem;
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            font-family: 'Inter', sans-serif;
-            margin-bottom: 16px;
-            transition: all 0.2s ease;
-            outline: none;
-            background: #f8fafc;
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--tg-color);
-            background: var(--surface);
-            box-shadow: 0 0 0 4px rgba(36, 161, 222, 0.1);
-        }
-
-        button {
-            width: 100%;
-            background: var(--accent);
-            color: #ffffff;
-            border: none;
-            padding: 18px;
-            border-radius: 14px;
-            font-family: 'Neue Machina', monospace;
-            font-size: 1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        button:hover {
-            background: var(--tg-color);
-            transform: translateY(-2px);
-        }
-
-        button:disabled {
-            background: var(--border);
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Уведомления */
-        .msg-box {
-            display: none;
-            padding: 24px;
-            border-radius: 16px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            text-align: center;
-            line-height: 1.5;
-        }
-
-        .success-msg {
-            background: var(--success-bg);
-            border: 1px solid var(--success-border);
-            color: var(--success-text);
-        }
-
-        .error-msg {
-            background: var(--error-bg);
-            border: 1px solid var(--error-border);
-            color: var(--error-text);
-            margin-top: 16px;
-        }
-
-        @media(max-width: 480px) {
-            .secure-card { padding: 24px; }
-            h1 { font-size: 1.5rem; }
-        }
+        /* Стили такие же, как на твоем основном сайте для консистентности */
+        body { background: #e4e7eb; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        textarea { width: 100%; height: 100px; margin: 20px 0; padding: 15px; border: 1px solid #cbd5e1; border-radius: 12px; resize: none; }
+        button { background: #1e293b; color: white; border: none; padding: 15px 30px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: 700; }
+        button:hover { background: #0f172a; }
+        #result { margin-top: 20px; word-break: break-all; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="bg-grid-pattern">
-        <svg class="bg-svg-logo logo-eagle" viewBox="0 0 24 24"><path d="M12 2s-8 3-8 9c0 5.52 4.48 10 8 11 3.52-1 8-5.48 8-11 0-6-8-9-8-9zm0 18c-2.48-1.12-6-4.91-6-9 0-4.04 5.33-6.57 6-6.87.67.3 6 2.83 6 6.87 0 4.09-3.52 7.88-6 9z"/></svg>
-        <svg class="bg-svg-logo logo-doc" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.89-1.99 2L4 20c0 1.1.89 2 2 2h12c1.1 0 2-.89 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-    </div>
+<div class="card">
+    <h3>Безопасная передача</h3>
+    <p style="font-size: 0.8rem; color: #475569;">Данные исчезнут после первого открытия.</p>
+    <textarea id="secretInput" placeholder="Вставь пароль или код сюда..."></textarea>
+    <button onclick="createSecret()">ОТПРАВИТЬ БЕЗОПАСНО</button>
+    <div id="result"></div>
+</div>
 
-    <div class="secure-card">
-        <div class="top-notice">Твои данные не сохраняются. Ссылка исчезает после первого открытия.</div>
+<script>
+async function createSecret() {
+    const input = document.getElementById('secretInput');
+    const resultDiv = document.getElementById('result');
+    if (!input.value) return alert('Введите данные!');
 
-        <h1>Безопасная передача данных</h1>
-        <p class="subtitle">Введи пароль или код в поле ниже. После отправки данные будут доступны только один раз и автоматически удалятся.</p>
+    resultDiv.innerText = 'Создаю ссылку...';
 
-        <div id="form-block">
-            <input type="text" id="secretInput" placeholder="Введи пароль или код здесь" autocomplete="off">
-            <button id="submitBtn">Отправить безопасно</button>
-        </div>
-
-        <div id="errorMsg" class="msg-box error-msg">
-            Что-то пошло не так. Напиши мне напрямую в Telegram.
-        </div>
-
-        <div id="successMsg" class="msg-box success-msg">
-            Готово. Данные переданы. Ссылка сработает только один раз и исчезнет после открытия.
-        </div>
-    </div>
-
-    <script>
-        // --- НАСТРОЙКИ (ВСТАВЬ СЮДА СВОИ ДАННЫЕ) ---
-        const OTS_USERNAME = 'твой_email_на_ots';         // ВСТАВЬ СЮДА: Email от onetimesecret.com
-        const OTS_API_KEY = 'твой_api_key_ots';           // ВСТАВЬ СЮДА: API ключ от onetimesecret.com
-        const TG_BOT_TOKEN = 'твой_токен_бота_telegram';  // ВСТАВЬ СЮДА: Токен бота от BotFather
-        const TG_CHAT_ID = 'твой_chat_id';                // ВСТАВЬ СЮДА: Твой личный Chat ID
-        // -------------------------------------------
-
-        const submitBtn = document.getElementById('submitBtn');
-        const secretInput = document.getElementById('secretInput');
-        const formBlock = document.getElementById('formBlock');
-        const successMsg = document.getElementById('successMsg');
-        const errorMsg = document.getElementById('errorMsg');
-
-        submitBtn.addEventListener('click', async () => {
-            const secretValue = secretInput.value.trim();
-            if (!secretValue) return;
-
-            // Блокируем кнопку на время отправки
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Отправка...';
-            errorMsg.style.display = 'none';
-
-            try {
-                // 1. Формируем Basic Auth для One-Time Secret
-                const authHeader = 'Basic ' + btoa(OTS_USERNAME + ':' + OTS_API_KEY);
-
-                // 2. Отправляем пароль в One-Time Secret
-                const otsResponse = await fetch('/api/ots/share', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': authHeader,
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        secret: secretValue,
-                        ttl: 259200 // Секрет живет 3 дня, если его не открыли
-                    })
-                });
-
-                if (!otsResponse.ok) throw new Error('Ошибка создания секрета');
-
-                const otsData = await otsResponse.json();
-                const secretLink = `https://onetimesecret.com/secret/${otsData.secret_key}`;
-
-                // 3. Отправляем сгенерированную ссылку тебе в Telegram бота
-                const tgResponse = await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: TG_CHAT_ID,
-                        text: `🔐 Новый секрет от клиента:\n\n${secretLink}\n\n⚠️ Внимание: ссылка сгорит после первого нажатия!`
-                    })
-                });
-
-                if (!tgResponse.ok) throw new Error('Ошибка отправки в Telegram');
-
-                // 4. Показываем сообщение об успехе (прячем форму)
-                formBlock.style.display = 'none';
-                successMsg.style.display = 'block';
-
-            } catch (error) {
-                console.error(error);
-                // Ошибка: возвращаем кнопку и показываем текст ошибки
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Отправить безопасно';
-                errorMsg.style.display = 'block';
-            }
+    try {
+        // Мы используем API One-Time Secret
+        const response = await fetch('https://onetimesecret.com/api/v1/share', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `secret=${encodeURIComponent(input.value)}&passphrase=&ttl=3600`
         });
-    </script>
+
+        const data = await response.json();
+        if (data.secret_link) {
+            resultDiv.innerHTML = `Готово! Скопируй ссылку и пришли мне:<br><br><input type="text" value="${data.secret_link}" style="width:100%; padding:8px;" readonly>`;
+        }
+    } catch (e) {
+        resultDiv.innerText = 'Ошибка соединения. Попробуйте еще раз.';
+    }
+}
+</script>
+
 </body>
 </html>
