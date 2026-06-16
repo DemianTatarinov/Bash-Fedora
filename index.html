@@ -51,7 +51,7 @@
         body {
             background-color: var(--bg);
             color: var(--text-main);
-            font-family: Inter, system-ui, -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
             font-size: 0.9375rem;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
@@ -101,7 +101,7 @@
             padding: 0 1.5rem;
             position: relative;
             z-index: 1;
-            padding-bottom: 8rem;
+            padding-bottom: 4rem;
         }
 
         header {
@@ -115,7 +115,6 @@
             align-items: center;
             gap: 0.5rem;
             margin-bottom: 1.25rem;
-            font-family: Inter, system-ui, -apple-system, sans-serif;
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -132,20 +131,26 @@
 
         /* --- БУРГЕР МЕНЮ И ПАНЕЛЬ КЛИЕНТА --- */
         .burger-btn {
-            position: absolute;
+            position: fixed;
             top: 1.875rem;
-            right: 0;
-            background: transparent;
-            border: none;
+            right: calc(50% - min(25.625rem, 50vw) + 1.5rem);
+            background: rgba(228, 231, 235, 0.8);
+            backdrop-filter: blur(0.625rem);
+            border: 1px solid rgba(203, 213, 227, 0.5);
+            border-radius: 0.5rem;
             cursor: pointer;
-            z-index: 100;
+            z-index: 2000;
             display: flex;
             flex-direction: column;
             gap: 0.375rem;
-            padding: 0.625rem;
-            transition: transform 0.2s ease;
+            padding: 0.5rem;
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
         }
-        .burger-btn:hover { transform: scale(1.05); }
+        .burger-btn:hover { 
+            transform: scale(1.05);
+            background: rgba(228, 231, 235, 0.95);
+            border-color: var(--border);
+        }
         .burger-btn span {
             display: block;
             width: 1.875rem;
@@ -182,19 +187,19 @@
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 1px solid var(--border);
         }
-        .sidebar-header h3 { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 1.1rem; color: var(--text-main); font-weight: 700; }
+        .sidebar-header h3 { font-size: 1.1rem; color: var(--text-main); font-weight: 700; }
         .close-btn { background: none; border: none; font-size: 2rem; color: var(--text-muted); cursor: pointer; line-height: 1; transition: color 0.2s; }
         .close-btn:hover { color: var(--accent); }
 
         .sidebar-content { padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
 
-        .sidebar-section h4 { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem; letter-spacing: 0.05em; font-weight: 700; }
+        .sidebar-section h4 { font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem; letter-spacing: 0.05em; font-weight: 700; }
         .sidebar-section p { font-size: 0.85rem; color: var(--text-main); margin-bottom: 1rem; line-height: 1.5; }
 
         .sidebar-btn {
             display: flex; align-items: center; justify-content: center; gap: 0.5rem;
             width: 100%; padding: 0.875rem; border-radius: 0.75rem;
-            font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 0.9rem; font-weight: 700; text-transform: uppercase;
+            font-size: 0.9rem; font-weight: 700; text-transform: uppercase;
             text-decoration: none; transition: all 0.2s ease; cursor: pointer; margin-bottom: 0.625rem;
         }
         .sidebar-btn:last-child { margin-bottom: 0; }
@@ -216,8 +221,8 @@
         /* --- КОНЕЦ СТИЛЕЙ БУРГЕР МЕНЮ --- */
 
         h1 {
-            font-family: Inter, system-ui, -apple-system, sans-serif;
-            font-weight: 900;
+            font-family: Georgia, "Times New Roman", Times, serif;
+            font-weight: 700;
             font-size: clamp(1.875rem, 6vw, 3rem);
             line-height: 1.15;
             color: var(--text-main);
@@ -248,7 +253,7 @@
 
         .header-msg-link {
             display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;
-            font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 0.95rem; font-weight: 700; text-transform: uppercase;
+             font-size: 0.95rem; font-weight: 700; text-transform: uppercase;
             padding-bottom: 0.25rem; transition: all 0.2s ease; border-bottom: 2px solid transparent;
         }
         .link-tg { color: var(--tg-color); }
@@ -264,9 +269,16 @@
         section { margin-bottom: 3.75rem; }
 
         .section-title {
-            font-family: Inter, system-ui, -apple-system, sans-serif; font-size: clamp(0.85rem, 2.5vw, 1rem); text-transform: uppercase;
-            letter-spacing: 0.2em; color: var(--accent); font-weight: 800; margin-bottom: 1.5rem;
-            display: flex; align-items: center; gap: 0.75rem;
+            font-family: Georgia, "Times New Roman", Times, serif;
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            text-transform: none;
+            letter-spacing: normal;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
         .section-title::after { content: ""; height: 1px; background: var(--border); flex-grow: 1; }
 
@@ -284,8 +296,8 @@
         .tariff-card { border: 1px solid var(--border); background: var(--surface); border-radius: 1rem; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.01); position: relative; }
         .tariff-card.featured { border: none; background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, #24A1DE, #25D366) border-box; border: 2px solid transparent; box-shadow: 0 0.5rem 1.5rem rgba(43, 56, 76, 0.06); }
 
-        .tariff-title { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.375rem; text-transform: uppercase; letter-spacing: 0.02em; }
-        .tariff-price { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; line-height: 1.2; }
+        .tariff-title { font-family: Georgia, "Times New Roman", Times, serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.375rem; text-transform: none; letter-spacing: normal; }
+        .tariff-price { font-family: Georgia, "Times New Roman", Times, serif; font-size: 1.8rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; line-height: 1.2; }
         .tariff-price span { font-size: 0.9rem; font-weight: 400; color: var(--text-muted); }
         .tariff-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; min-height: auto; line-height: 1.4; }
 
@@ -297,24 +309,69 @@
         .scenarios-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
         @media(min-width: 43.75rem) { .scenarios-grid { grid-template-columns: repeat(3, 1fr); } }
         .scenario-card { background: var(--surface); border: 1px solid var(--border); border-radius: 1rem; padding: 1.25rem; box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.01); }
-        .scenario-card h4 { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem; text-transform: uppercase; color: var(--accent); }
+        .scenario-card h4 { font-family: Georgia, "Times New Roman", Times, serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; text-transform: none; color: var(--accent); }
         .scenario-steps { list-style: none; }
         .scenario-steps li { font-size: 0.85rem; color: #1e293b; margin-bottom: 0.625rem; line-height: 1.4; position: relative; padding-left: 1.25rem; }
         .scenario-steps li::before { content: "→"; position: absolute; left: 0; color: var(--tg-color); font-weight: bold; }
 
-        .cases-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-        @media(min-width: 34.375rem) { .cases-grid { grid-template-columns: repeat(2, 1fr); } }
-        .case-card { background: var(--surface); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.01); }
-        .case-card p { font-size: 0.95rem; color: var(--text-main); font-weight: 500; }
+        .cases-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media(min-width: 48rem) { .cases-grid { grid-template-columns: repeat(2, 1fr); } }
+        
+        .case-card { 
+            background: var(--surface); 
+            border: 1px solid var(--border); 
+            border-radius: 0; 
+            padding: 2.5rem; 
+            box-shadow: none; 
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .case-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--bg);
+            padding-bottom: 1rem;
+        }
+        .case-number {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .case-tag { 
+            display: inline-block; 
+            font-size: 0.7rem; 
+            font-weight: 700; 
+            padding: 0.125rem 0.5rem; 
+            border-radius: 0; 
+            text-transform: uppercase; 
+            border: 1px solid currentColor;
+            background: transparent !important;
+        }
+        .case-card:nth-child(1) .case-tag { color: #d97706; }
+        .case-card:nth-child(2) .case-tag { color: #dc2626; }
+        .case-card:nth-child(3) .case-tag { color: #2563eb; }
+        .case-card:nth-child(4) .case-tag { color: #0284c7; }
+        .case-card:nth-child(5) .case-tag { color: #4f46e5; }
+        .case-card:nth-child(6) .case-tag { color: #16a34a; }
+        .case-card:nth-child(7) .case-tag { color: #c026d3; }
+        .case-card:nth-child(8) .case-tag { color: var(--text-muted); }
 
-        .case-tag { display: inline-block; font-size: 0.75rem; font-family: Inter, system-ui, -apple-system, sans-serif; font-weight: 700; padding: 0.25rem 0.625rem; border-radius: 0.375rem; margin-bottom: 0.75rem; text-transform: uppercase; }
-        .case-card:nth-child(1) .case-tag { background: #fef3c7; color: #d97706; }
-        .case-card:nth-child(2) .case-tag { background: #fee2e2; color: #dc2626; }
-        .case-card:nth-child(3) .case-tag { background: #dbeafe; color: #2563eb; }
-        .case-card:nth-child(4) .case-tag { background: #e0f2fe; color: #0284c7; }
-        .case-card:nth-child(5) .case-tag { background: #e0e7ff; color: #4f46e5; }
-        .case-card:nth-child(6) .case-tag { background: #f0fdf4; color: #16a34a; }
-        .case-card:nth-child(7) .case-tag { background: #fae8ff; color: #c026d3; }
+        .case-card p { 
+            font-size: 1.05rem; 
+            color: var(--text-main); 
+            font-weight: 500; 
+            line-height: 1.5;
+        }
 
         .bento-services { display: grid; grid-template-columns: 1fr; gap: 1rem; }
         @media(min-width: 34.375rem) { .bento-services { grid-template-columns: repeat(2, 1fr); } }
@@ -323,7 +380,7 @@
         .bento-item:hover { border-color: var(--accent); }
         .bento-item.open { border-color: var(--tg-color); background: #fcfdfe; }
 
-        .bento-item h4 { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 0.95rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .bento-item h4 { font-family: Georgia, "Times New Roman", Times, serif; font-size: 1.1rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
         .bento-item h4::after { content: "+"; color: var(--text-muted); font-size: 1.2rem; transition: transform 0.3s; }
         .bento-item.open h4::after { transform: rotate(45deg); color: var(--tg-color); }
         .bento-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
@@ -332,9 +389,9 @@
         .steps-layout { display: flex; flex-direction: column; gap: 1.25rem; position: relative; }
         .steps-layout::before { content: ""; position: absolute; left: 2.1875rem; top: 2.5rem; bottom: 2.5rem; width: 2px; background: var(--border); z-index: 0; transition: background 0.3s ease; }
         .step-block { background: var(--surface); border: 1px solid var(--border); border-radius: 1rem; padding: 1.25rem 1.5rem; box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.01); display: flex; align-items: center; gap: 1.5rem; position: relative; z-index: 1; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease; }
-        .step-num { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--text-muted); line-height: 1; background: var(--bg); border: 1px solid var(--border); width: 3.125rem; height: 3.125rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.3s ease; }
+        .step-num { font-size: 1.6rem; font-weight: 700; color: var(--text-muted); line-height: 1; background: var(--bg); border: 1px solid var(--border); width: 3.125rem; height: 3.125rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.3s ease; }
         .step-text { flex-grow: 1; }
-        .step-block h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.25rem; font-family: Inter, system-ui, -apple-system, sans-serif; text-transform: uppercase; letter-spacing: 0.02em; }
+        .step-block h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.25rem; font-family: Georgia, "Times New Roman", Times, serif; text-transform: none; letter-spacing: normal; }
         .step-block p { font-size: 0.9rem; color: var(--text-muted); }
         .step-block:hover { transform: translateY(-0.25rem); border-color: var(--tg-color); box-shadow: 0 0.5rem 1.5rem rgba(36, 161, 222, 0.1); }
         .step-block:hover .step-num { color: #ffffff; background: var(--tg-color); border-color: var(--tg-color); transform: scale(1.05); }
@@ -350,7 +407,7 @@
         .faq-layout { display: flex; flex-direction: column; gap: 0.75rem; }
         .faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.25rem; cursor: pointer; transition: all 0.2s; }
         .faq-item:hover { border-color: #cbd5e1; }
-        .faq-question { font-family: Inter, system-ui, -apple-system, sans-serif; font-weight: 700; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; }
+        .faq-question { font-family: Georgia, "Times New Roman", Times, serif; font-weight: 700; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
         .faq-question::after { content: "+"; color: var(--text-muted); font-size: 1.1rem; transition: transform 0.3s; }
         .faq-item.open .faq-question::after { transform: rotate(45deg); color: var(--accent); }
         .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; font-size: 0.9rem; color: var(--text-muted); }
@@ -358,30 +415,13 @@
 
         .note { background: var(--success-bg); border: 1px solid var(--success-border); border-radius: 1.25rem; padding: 2.25rem; position: relative; box-shadow: 0 0.375rem 1.25rem rgba(22,101,52,0.03); }
         .note::before { content: ""; position: absolute; top: 0; left: 0; width: 0.25rem; height: 100%; background: var(--success-text); border-radius: 1.25rem 0 0 1.25rem; }
-        .note h3 { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; color: var(--success-text); }
+        .note h3 { font-family: Georgia, "Times New Roman", Times, serif; font-size: 1.2rem; text-transform: none; letter-spacing: normal; margin-bottom: 1rem; color: var(--success-text); }
         .note-list { padding-left: 1.25rem; list-style-type: square; color: #1e293b; font-size: 0.9rem; }
         .note-list li { margin-bottom: 0.75rem; }
 
-        footer { text-align: center; padding: 3.75rem 0 1.25rem; border-top: 1px solid var(--border); }
-        footer p { font-size: 1.15rem; color: var(--text-main); font-weight: 500; font-family: Inter, system-ui, -apple-system, sans-serif; }
+        footer { text-align: center; padding: 2.5rem 0 1.25rem; border-top: 1px solid var(--border); margin-top: 2rem; }
+        footer p { font-size: 1.15rem; color: var(--text-main); font-weight: 500; }
 
-        .bottom-popup { position: fixed; bottom: -15.625rem; left: 50%; transform: translateX(-50%); width: calc(100% - 3rem); max-width: 37.5rem; background: var(--surface); border: 2px solid var(--accent); border-radius: 1.25rem; padding: 1.25rem; box-shadow: 0 0.625rem 2.5rem rgba(0, 0, 0, 0.15); z-index: 999; display: flex; flex-direction: column; gap: 1.25rem; transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        @media(min-width: 35rem) { .bottom-popup { flex-direction: row; align-items: center; justify-content: space-between; } }
-        .bottom-popup.show { bottom: 1.5rem; }
-        .popup-text h5 { font-family: Inter, system-ui, -apple-system, sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; }
-        .popup-text p { font-size: 0.85rem; color: var(--text-muted); }
-        .popup-links-container { display: flex; gap: 0.625rem; flex-wrap: wrap; }
-        .popup-msg-btn { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; background: var(--bg); border: 1px solid var(--border); border-radius: 0.75rem; width: 5rem; height: 4.0625rem; transition: all 0.2s ease; }
-        .popup-msg-btn:hover { background: #ffffff; }
-        .popup-msg-btn span { font-size: 0.5625rem; font-family: Inter, system-ui, -apple-system, sans-serif; font-weight: 700; text-transform: uppercase; margin-top: 0.25rem; color: var(--text-main); }
-        .popup-msg-btn svg { width: 1.125rem; height: 1.125rem; }
-        .pop-wa { color: var(--wa-color); }
-        .pop-wa:hover { border-color: var(--wa-color); }
-        .pop-tg { color: var(--tg-color); }
-        .pop-tg:hover { border-color: var(--tg-color); }
-        .pop-tg svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .pop-form { background: var(--form-bg); border: 1px solid var(--form-border); width: 6.5625rem; }
-        .pop-form:hover { background: rgba(36, 161, 222, 0.22); border-color: var(--tg-color); }
 
         /* Quiz Styles */
         .quiz-container { background: var(--surface); border: 1px solid var(--border); border-radius: 1.5rem; padding: 2rem; box-shadow: 0 0.625rem 1.875rem rgba(0,0,0,0.02); margin-bottom: 3.75rem; overflow: hidden; position: relative; }
@@ -390,18 +430,18 @@
         .quiz-progress-fill { height: 100%; background: var(--tg-color); width: 0%; transition: width 0.3s ease; }
         .quiz-question-container { display: none; }
         .quiz-question-container.active { display: block; animation: fadeIn 0.4s ease-out; }
-        .quiz-title { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--accent); }
+        .quiz-title { font-family: Georgia, "Times New Roman", Times, serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--accent); }
         .quiz-options { display: flex; flex-direction: column; gap: 0.75rem; }
         .quiz-option { padding: 1rem 1.25rem; border: 1px solid var(--border); border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; background: var(--surface); text-align: left; font-size: 1rem; color: var(--text-main); }
         .quiz-option:hover { border-color: var(--tg-color); background: #fcfdfe; }
         .quiz-result { display: none; text-align: center; animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .quiz-result.active { display: block; }
-        .result-tariff-name { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--tg-color); text-transform: uppercase; margin-bottom: 0.5rem; }
-        .result-price { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 2.2rem; font-weight: 700; margin-bottom: 1rem; }
+        .result-tariff-name { font-family: Georgia, "Times New Roman", Times, serif; font-size: 1.8rem; font-weight: 700; color: var(--tg-color); text-transform: none; margin-bottom: 0.5rem; }
+        .result-price { font-family: Georgia, "Times New Roman", Times, serif; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; }
         .result-desc { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; max-width: 31.25rem; margin-left: auto; margin-right: auto; }
         .quiz-result-btns { display: flex; flex-direction: column; gap: 0.75rem; max-width: 20rem; margin: 0 auto; }
         @media(min-width: 31.25rem) { .quiz-result-btns { flex-direction: row; justify-content: center; max-width: none; } }
-        .quiz-reset-btn { margin-top: 1.5rem; background: none; border: none; color: var(--text-muted); font-family: Inter, system-ui, -apple-system, sans-serif; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; cursor: pointer; letter-spacing: 0.05em; transition: color 0.2s; }
+        .quiz-reset-btn { margin-top: 1.5rem; background: none; border: none; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; cursor: pointer; letter-spacing: 0.05em; transition: color 0.2s; }
         .quiz-reset-btn:hover { color: var(--accent); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(0.625rem); } to { opacity: 1; transform: translateY(0); } }
@@ -418,7 +458,7 @@
         /* Ripple Effect */
         .ripple { position: absolute; background: rgba(255, 255, 255, 0.3); border-radius: 50%; transform: scale(0); animation: ripple-animation 0.6s linear; pointer-events: none; }
         @keyframes ripple-animation { to { transform: scale(4); opacity: 0; } }
-        .sidebar-btn, .popup-msg-btn, button, .header-msg-link { position: relative; overflow: hidden; }
+        .sidebar-btn, button, .header-msg-link { position: relative; overflow: hidden; }
 
         /* Floating Button Wiggle */
         @keyframes wiggle {
@@ -429,14 +469,105 @@
         .burger-btn.wiggle { animation: wiggle 0.5s ease-in-out; }
 
         /* Cookie Notice overlap fix */
-        body.cookies-open .bottom-popup.show { bottom: 6.25rem; }
+        body.cookies-open .fab-container { bottom: 6.25rem; }
         @media(max-width: 35rem) {
-            body.cookies-open .bottom-popup.show { bottom: 11.25rem; }
+            body.cookies-open .fab-container { bottom: 11.25rem; }
+        }
+
+
+        /* FAB Help Widget */
+        .fab-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: flex-end;
+            gap: 1rem;
+            transition: bottom 0.3s;
+        }
+        .fab-button {
+            width: 3.5rem;
+            height: 3.5rem;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.2);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .fab-button:hover {
+            transform: scale(1.05);
+            background: var(--accent-hover);
+        }
+        .fab-button.active svg {
+            transform: rotate(45deg);
+        }
+        .fab-button svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            transition: transform 0.3s;
+        }
+        .fab-menu {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: flex-end;
+            gap: 0.75rem;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(1rem);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fab-menu.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+        .fab-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-main);
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .fab-item:hover {
+            border-color: var(--accent);
+            transform: translateX(-0.25rem);
+            background: var(--bg);
+        }
+        .fab-item svg {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
+        .fab-item.tg { color: var(--tg-color); }
+        .fab-item.wa { color: var(--wa-color); }
+        .fab-item.vb { color: #7360f2; }
+
+        @media(max-width: 48rem) {
+            .fab-container {
+                bottom: 1.5rem;
+                right: 1.5rem;
+            }
         }
 
         /* Accessibility */
         @media (prefers-reduced-motion: reduce) {
-            .reveal, .quiz-question-container, .quiz-result, .bento-content, .faq-answer, .sidebar, .bottom-popup, .burger-btn {
+            .reveal, .quiz-question-container, .quiz-result, .bento-content, .faq-answer, .sidebar, .fab-container, .fab-menu, .burger-btn {
                 transition: none !important;
                 animation: none !important;
             }
@@ -465,7 +596,7 @@
                 <span class="header-badge"></span> WARSAW SUPPORT // INTERFACE CONTROL
             </div>
 
-            <button class="burger-btn" id="burgerBtn" style="position: fixed; top: 30px; right: calc(50% - min(410px, 50vw) + 24px); z-index: 2000; background: rgba(228, 231, 235, 0.7); backdrop-filter: blur(10px); padding: 8px; border-radius: 8px; border: 1px solid rgba(203, 213, 227, 0.5);">
+            <button class="burger-btn" id="burgerBtn">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -505,35 +636,59 @@
             <div class="section-title">// Реальные кейсы</div>
             <div class="cases-grid">
                 <div class="case-card">
-                    <div class="case-tag">Сложный случай</div>
+                    <div class="case-header">
+                        <span class="case-number">Case #01</span>
+                        <div class="case-tag">Сложный случай</div>
+                    </div>
                     <p>Собрали пакет документов на Карту Побыту для семьи из 3-х человек после двух отказов у предыдущих посредников. Подача прошла успешно.</p>
                 </div>
                 <div class="case-card">
-                    <div class="case-tag">Экстренно</div>
+                    <div class="case-header">
+                        <span class="case-number">Case #02</span>
+                        <div class="case-tag">Экстренно</div>
+                    </div>
                     <p>Разблокировали счет в банке Santander за 4 часа. Нашли причину в несоответствии актуальных личных данных в системе ZUS и вовремя подали корректировку.</p>
                 </div>
                 <div class="case-card">
-                    <div class="case-tag">С нуля</div>
+                    <div class="case-header">
+                        <span class="case-number">Case #03</span>
+                        <div class="case-tag">С нуля</div>
+                    </div>
                     <p>Помогли переехавшему IT-специалисту за 2 дня оформить PESEL, запустить Profil Zaufany, открыть счет и разобраться с подачей декларации PIT.</p>
                 </div>
                 <div class="case-card">
-                    <div class="case-tag">Оптимизация</div>
+                    <div class="case-header">
+                        <span class="case-number">Case #04</span>
+                        <div class="case-tag">Оптимизация</div>
+                    </div>
                     <p>Исправили критические ошибки в отправленном wnioski на ВНЖ до того, как ужонд выставил официальное требование (wezwanie), сэкономив клиенту 3 месяца.</p>
                 </div>
                 <div class="case-card">
-                    <div class="case-tag">Водительские права</div>
+                    <div class="case-header">
+                        <span class="case-number">Case #05</span>
+                        <div class="case-tag">Водительские права</div>
+                    </div>
                     <p>Клиент с категорией B+C потерял два месяца — посредник не предупредил об обязательном психологическом тесте для категории C. Прошли тест, собрали правильный пакет документов, права получены.</p>
                 </div>
                 <div class="case-card">
-                    <div class="case-tag">Субсидии</div>
+                    <div class="case-header">
+                        <span class="case-number">Case #06</span>
+                        <div class="case-tag">Субсидии</div>
+                    </div>
                     <p>Семья три года платила полную аренду не зная что имеет право на жилищную субсидию. Площадь квартиры 42 кв.м на троих — норма 45. Оформили Dodatek mieszkaniowy через районную администрацию.</p>
                 </div>
                 <div class="case-card">
-                    <div class="case-tag">Экономия</div>
+                    <div class="case-header">
+                        <span class="case-number">Case #07</span>
+                        <div class="case-tag">Экономия</div>
+                    </div>
                     <p>Клиент два года платил за проездной 180 злотых в месяц. Работает за пределами Варшавы, прописан в городе. Через правильное оформление PIT-37 проездной стал стоить 98 злотых. Экономия 984 злотых в год.</p>
                 </div>
                 <div class="case-card">
-                    <div class="case-tag">Медицина</div>
+                    <div class="case-header">
+                        <span class="case-number">Case #08</span>
+                        <div class="case-tag">Медицина</div>
+                    </div>
                     <p>EKUZ приходит письмом от NFZ — иногда из другого города, это нормально. Карта действует во всех странах ЕС.</p>
                 </div>
             </div>
@@ -545,7 +700,7 @@
                 <div id="quizContent">
                     <div class="quiz-header">
                         <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="progressFill"></div></div>
-                        <h3 style="font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 0.95rem; font-weight: 700; text-transform: uppercase;">Не знаешь какой тариф подходит? Ответь на 4 вопроса — займёт 1 минуту.</h3>
+                        <h3 style=" font-size: 0.95rem; font-weight: 700; text-transform: uppercase;">Не знаешь какой тариф подходит? Ответь на 4 вопроса — займёт 1 минуту.</h3>
                     </div>
 
                     <!-- Question 1 -->
@@ -819,7 +974,7 @@
             <div class="cases-grid">
                 <div class="case-card" style="display: flex; flex-direction: column;">
                     <div class="case-tag" style="background: #e0e7ff; color: #4f46e5;">Безопасно</div>
-                    <h4 style="font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; text-transform: uppercase;">Пароли и коды</h4>
+                    <h4 style=" font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; text-transform: uppercase;">Пароли и коды</h4>
                     <p style="margin-bottom: 20px; flex-grow: 1;">Для паролей и кодов используем защищённый одноразовый канал — ссылка исчезает после открытия.</p>
                     <a href="secure.html" class="sidebar-btn btn-tg" style="margin-bottom: 0;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
@@ -829,7 +984,7 @@
                 </div>
                 <div class="case-card" style="display: flex; flex-direction: column;">
                     <div class="case-tag" style="background: #e0f2fe; color: #0284c7;">Файлы</div>
-                    <h4 style="font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; text-transform: uppercase;">Документы</h4>
+                    <h4 style=" font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; text-transform: uppercase;">Документы</h4>
                     <p style="margin-bottom: 20px; flex-grow: 1;">Сканы документов передаются через закрытую папку Google Drive.</p>
                     <a href="https://drive.google.com/" class="sidebar-btn btn-outline" target="_blank" style="margin-bottom: 0;">
                         <svg viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px; margin-right: 8px;"><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
@@ -840,12 +995,12 @@
             </div>
         </section>
 
-    <footer style="text-align: center; padding: 24px 0 10px; border-top: 1px solid var(--border); margin-top: 40px;">
+    <footer>
         <div style="display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center;">
-            <p style="font-size: 0.85rem; color: var(--text-main); font-weight: 600; font-family: Inter, system-ui, -apple-system, sans-serif; margin: 0; padding: 0; line-height: 1.2;">
+            <p style="font-size: 0.85rem; color: var(--text-main); font-weight: 600;  margin: 0; padding: 0; line-height: 1.2;">
                 &copy; 2026 Демьян Татаринов. Понятные интерфейсы госсервисов.
             </p>
-            <a href="privacy.html" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: none; font-family: Inter, system-ui, -apple-system, sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Политика конфиденциальности</a>
+            <a href="privacy.html" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: none;  font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Политика конфиденциальности</a>
         </div>
     </footer>
 
@@ -870,32 +1025,16 @@
                     WhatsApp
                 </a>
             </div>
-            <div class="sidebar-section" style="margin-top: 24px;">
-            <h4>Инструменты</h4>
-            
-            <a href="secure.html" class="sidebar-btn btn-secure">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                OneTimeSecret (Инструкция)
-            </a>
-            
-            <a href="https://drive.google.com/" class="sidebar-btn btn-outline" target="_blank" rel="noopener noreferrer">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
-                Google Drive
-            </a>
-        </div>
-
             <div class="sidebar-section">
-                <h4>Передать данные безопасно</h4>
-                <p>Для паролей и кодов используем защищённый одноразовый канал — ссылка исчезает после открытия.</p>
-                <a href="secure.html" class="sidebar-btn btn-secure">Открыть безопасную форму</a>
-            </div>
-
-            <div class="sidebar-section">
-                <h4>Передать файлы</h4>
-                <p>Сканы документов передаются через закрытую папку Google Drive.</p>
-                <a href="#" class="sidebar-btn btn-outline" target="_blank">
-                    <svg viewBox="0 0 24 24" fill="currentColor" style="color: var(--accent);"><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
-                    Открыть папку
+                <h4>Безопасная передача</h4>
+                <p>Используем зашифрованные каналы для ваших паролей и файлов.</p>
+                <a href="secure.html" class="sidebar-btn btn-secure">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                    OneTimeSecret
+                </a>
+                <a href="https://drive.google.com/" class="sidebar-btn btn-outline" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
+                    Google Drive
                 </a>
             </div>
         </div>
@@ -903,44 +1042,49 @@
 
     <div id="cookieNotice" style="position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); padding: 16px 24px; z-index: 5000; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); display: none; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap;">
         <p style="font-size: 0.85rem; margin: 0; color: var(--text-muted); text-align: center; font-weight: 500;">Этот сайт использует файлы cookie. Продолжая использование вы соглашаетесь с <a href="privacy.html" style="color: var(--accent); font-weight: 700; text-decoration: underline;">политикой конфиденциальности</a>.</p>
-        <button onclick="acceptCookies()" style="background: var(--accent); color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.8rem; font-family: Inter, system-ui, -apple-system, sans-serif; text-transform: uppercase; letter-spacing: 0.05em;">Понятно</button>
+        <button onclick="acceptCookies()" style="background: var(--accent); color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.8rem;  text-transform: uppercase; letter-spacing: 0.05em;">Понятно</button>
     </div>
 
-    <div class="bottom-popup" id="mobilePopup">
-        <div class="popup-text">
-            <h5>Нужна помощь?</h5>
-            <p>Выберите удобный способ связи.</p>
+    <div class="fab-container">
+        <div class="fab-button" id="fabBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         </div>
-        <div class="popup-links-container">
-            <a href="https://wa.me/48574317215" class="popup-msg-btn pop-wa" target="_blank">
+        <div class="fab-menu" id="fabMenu">
+            <a href="https://t.me/DemianTatarinov" class="fab-item tg" target="_blank">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+                Telegram
+            </a>
+            <a href="https://wa.me/48574317215" class="fab-item wa" target="_blank">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.503-5.739-1.45L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.423 0 9.834-4.394 9.837-9.795.001-2.618-1.015-5.079-2.862-6.928C16.593 1.932 14.135.918 11.517.918c-5.43 0-9.843 4.414-9.846 9.82-.001 1.734.461 3.426 1.336 4.928l-.985 3.593 3.682-.962zm12.396-6.705c-.328-.164-1.942-.959-2.242-1.069-.3-.11-.518-.164-.737.164-.219.328-.847 1.069-1.038 1.288-.19.219-.383.246-.711.082-.328-.164-1.386-.511-2.641-1.631-.976-.87-1.634-1.946-1.826-2.274-.192-.328-.02-.505.144-.668.148-.146.328-.383.493-.575.164-.192.219-.328-.328-.547.11-.219.055-.411-.027-.575-.082-.164-.737-1.777-1.011-2.435-.267-.641-.539-.553-.737-.563-.19-.01-.41-.01-.629-.01-.219 0-.575.082-.875.411-.3.328-1.147 1.121-1.147 2.736 0 1.614 1.176 3.174 1.339 3.393.164.219 2.313 3.532 5.6 4.951.782.338 1.392.54 1.868.692.785.25 1.5.214 2.064.13.629-.094 1.942-.794 2.216-1.56.274-.766.274-1.423.192-1.56-.082-.136-.3-.219-.629-.383z"/></svg>
-                <span>WhatsApp</span>
+                WhatsApp
             </a>
-            <a href="https://t.me/DemianTatarinov" class="popup-msg-btn pop-tg" target="_blank">
-                <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
-                <span>Telegram</span>
-            </a>
-            <a href="https://forms.gle/AuSEHryw4BdJstNv9" class="popup-msg-btn pop-form" target="_blank">
-                <svg viewBox="0 0 24 24" fill="currentColor" style="color: var(--accent);"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2zm0-4H7V7h10v2zm0 8H7v-2h10v2z"/></svg>
-                <span>Анкета</span>
+            <a href="viber://chat?number=48574317215" class="fab-item vb">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.57 19c-.89.69-1.86 1.17-2.88 1.43l-.1.02-.13-.08a7.86 7.86 0 0 1-.58-.45 4.3 4.3 0 0 1-.95-1.14c-.16-.3-.28-.62-.35-.95-.2-.84.05-1.68.7-2.23.63-.53 1.48-.68 2.26-.39.77.3 1.3 1 1.42 1.83.05.32.06.64.04.96-.02.32-.08.64-.17.95l-.04.14.07.13c.2.35.43.68.7 1zM20 9c0-2.21-1.79-4-4-4s-4 1.79-4 4 1.79 4 4 4 4-1.79 4-4zm-8 12c-1.33 0-2.67-.33-3.89-.96l-4.11 1.41 1.41-4.11C4.78 16.12 4 14.61 4 13c0-4.42 3.58-8 8-8s8 3.58 8 8-3.58 8-8 8z"/></svg>
+                Viber
             </a>
         </div>
     </div>
+
 
     <script>
         // Remove no-js class immediately
         document.documentElement.classList.remove('no-js');
 
-        // Логика прокрутки для нижнего попапа
-        window.addEventListener('scroll', function() {
-            var popup = document.getElementById('mobilePopup');
-            var totalPageHeight = document.documentElement.scrollHeight;
-            var scrollPoint = window.scrollY + window.innerHeight;
 
-            if (totalPageHeight - scrollPoint < 100) {
-                popup.classList.add('show');
-            } else {
-                popup.classList.remove('show');
+        // FAB Menu Toggle
+        var fabBtn = document.getElementById('fabBtn');
+        var fabMenu = document.getElementById('fabMenu');
+        
+        fabBtn.addEventListener('click', function() {
+            fabBtn.classList.toggle('active');
+            fabMenu.classList.toggle('show');
+        });
+
+        // Close FAB menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!fabBtn.contains(event.target) && !fabMenu.contains(event.target)) {
+                fabBtn.classList.remove('active');
+                fabMenu.classList.remove('show');
             }
         });
 
@@ -1006,7 +1150,7 @@
             button.appendChild(circle);
         }
 
-        document.querySelectorAll('.sidebar-btn, .popup-msg-btn, button, .header-msg-link').forEach(function(btn) {
+        document.querySelectorAll('.sidebar-btn, button, .header-msg-link').forEach(function(btn) {
             btn.addEventListener('click', createRipple);
         });
 
