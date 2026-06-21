@@ -1,25 +1,88 @@
 #!/bin/bash
-set -euo pipefail
+set -uo pipefail
 
-# 1. Показываем красивое окно KDE для ввода имени папки
-USER_FOLDER=$(kdialog --inputbox "Введите имя папки для сохранения в Git:" "iphone_backup")
+SCRIPT_NAME=$(basename "$0")
 
-# Если нажали "Отмена" или закрыли окно — выходим
-[ -z "$USER_FOLDER" ] && exit 0
+# Проверяем наличие файлов (исключая сам скрипт)
+file_count=$(find . -maxdepth 1 -type f ! -name "$SCRIPT_NAME" ! -name ".*" | wc -l)
+if [ "$file_count" -eq 0 ]; then
+    echo "Новых файлов для переноса нет."
+    exit 0
+fi
 
-# Имя папки (если стерли всё, будет дата)
-FOLDER_NAME="${USER_FOLDER:-"archive_$(date +%F)"}"
+# ==========================================
+# ШАГ 1: ОПРЕДЕЛЯЕМ СТРУКТУРУ ПАПОК
+# ==========================================
+MAIN_FOLDER=$(kdialog --inputbox "Шаг 1/3: Если нужно собрать ВСЕ файлы в одну общую папку, введите её имя.\n(Оставьте пустым, если папка не нужна):" "")
 
-# 2. Создаем папку
-mkdir -p "$FOLDER_NAME"
+TARGET_DIR="."
+CHOSEN_README_PATH="./README.md"
 
-# 3. Переносим файлы (кроме самого скрипта и скрытых)
-find . -maxdepth 1 -type f ! -name "$(basename "$0")" ! -name ".*" -exec mv {} "$FOLDER_NAME/" \;
+if [ -n "$MAIN_FOLDER" ]; then
+    mkdir -p "$MAIN_FOLDER"
+    TARGET_DIR="$MAIN_FOLDER"
+    CHOSEN_README_PATH="$MAIN_FOLDER/README.md"
 
-# 4. Отправляем в Git
+    for file in *; do
+        [ -f "$file" ] || continue
+        [ "$file" != "$SCRIPT_NAME" ] || continue
+        [ "$file" != "$MAIN_FOLDER" ] || continue
+        mv "$file" "$TARGET_DIR/"
+    done
+else
+    kdialog --yesno "Общая папка не создана. Разложить каждый файл в ПЕРСОНАЛЬНУЮ папку по его имени?"
+    if [ $? -eq 0 ]; then
+        for file in *; do
+            [ -f "$file" ] || continue
+            [ "$file" != "$SCRIPT_NAME" ] || continue
+            filename="${file%.*}"
+            mkdir -p "$filename"
+            mv "$file" "$filename/"
+        done
+    fi
+fi
+
+# ==========================================
+# ШАГ 2: СОЗДАНИЕ И ОПИСАНИЕ README.md
+# ==========================================
+README_COMMENT=$(kdialog --inputbox "Шаг 2/3: Добавить описание или заметку в README.md?\n(По желанию):" "")
+
+echo "# Обновление репозитория от $(date '+%Y-%m-%d %H:%M')" > "$CHOSEN_README_PATH"
+echo "Отправлено автоматически с Fedora Linux (KDE Plasma 6)." >> "$CHOSEN_README_PATH"
+
+if [ -n "$README_COMMENT" ]; then
+    echo -e "\n### 📝 Комментарий автора:\n> $README_COMMENT" >> "$CHOSEN_README_PATH"
+fi
+
+echo -e "\n### 📦 Структура изменений:" >> "$CHOSEN_README_PATH"
+if [ -n "$MAIN_FOLDER" ]; then
+    echo "* Все файлы были успешно упакованы в целевую папку \`$MAIN_FOLDER\`" >> "$CHOSEN_README_PATH"
+else
+    echo "* Файлы загружены напрямую в корень репозитория или распределены персонально." >> "$CHOSEN_README_PATH"
+fi
+
+# ==========================================
+# ШАГ 3: ОТПРАВКА В GIT (ЗАЩИТА ОТ СЕБЯ)
+# ==========================================
+echo "--> Индексация..."
 git add .
-git commit -m "Файлы перемещены в папку: $FOLDER_NAME"
-git push
 
-# 5. Уведомление об успешном завершении
-kdialog --passivepopup "🚀 Все файлы успешно отправлены в Git-папку '$FOLDER_NAME'!" 5
+# ЖЕСТКАЯ ЗАЩИТА: Насильно убираем сам скрипт из отправки, если он случайно добавился
+git rm --cached "$SCRIPT_NAME" &> /dev/null || true
+
+COMMIT_MSG="Авто-пуш: бэкап $(date '+%Y-%m-%d %H:%M')"
+[ -n "$MAIN_FOLDER" ] && COMMIT_MSG="Авто-пуш: создана папка $MAIN_FOLDER"
+
+git diff-index --quiet HEAD -- || git commit -m "$COMMIT_MSG"
+
+echo "--> Синхронизация с GitHub..."
+git pull origin main --allow-unrelated-histories --no-rebase -X ours --quiet
+
+echo "--> Отправка на GitHub..."
+if git push; then
+    kdialog --passivepopup "🚀 Всё готово! Изменения улетели на Git (без самого скрипта)." 5
+else
+    echo "⚠️ Обычный push отклонен сервером. Пробиваем через Force..."
+    git push -u origin main --force
+    kdialog --passivepopup "🚀 Пробито силой! Проверяй свой GitHub." 5
+fi
