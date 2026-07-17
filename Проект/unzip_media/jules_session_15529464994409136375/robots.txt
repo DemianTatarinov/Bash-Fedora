@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /secure.html
-Sitemap: https://warsaw-support.waw.pl/sitemap.xml
