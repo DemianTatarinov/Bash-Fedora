@@ -12,7 +12,6 @@ from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QFont
 
 class GitWorker(QThread):
-    # Сигналы для общения фонового процесса с интерфейсом
     progress_signal = pyqtSignal(int, str)
     status_signal = pyqtSignal(str)
     repos_loaded_signal = pyqtSignal(list)
@@ -43,11 +42,9 @@ class GitWorker(QThread):
 
     def load_repos(self):
         self.status_signal.emit("Получение списка репозиториев...")
-        # Проверяем gh cli
         if shutil.which("gh") is None:
             raise Exception("GitHub CLI (gh) не установлен в системе!")
 
-        # Проверяем авторизацию
         auth_check = subprocess.run(["gh", "auth", "status"], capture_output=True, text=True)
         if auth_check.returncode != 0:
             raise Exception("Вы не авторизованы в GitHub CLI. Запустите в терминале 'gh auth login'.")
@@ -60,16 +57,14 @@ class GitWorker(QThread):
         self.progress_signal.emit(10, f"Клонирование {self.chosen_repo}...")
         self.temp_dir = tempfile.mkdtemp(prefix="git-push-py-")
 
-        # Клонируем репозиторий
+        # Клонируем через gh
         clone_res = subprocess.run(["gh", "repo", "clone", self.chosen_repo, self.temp_dir, "--", "--depth", "1", "--quiet"], capture_output=True)
         if clone_res.returncode != 0:
             raise Exception("Не удалось клонировать репозиторий.")
 
         self.progress_signal.emit(40, "Поиск файлов в рабочей директории...")
-        # Ищем все файлы
         all_files = []
         for root, dirs, files in os.walk(self.source_dir):
-            # Пропускаем скрытые папки (типа .git)
             dirs[:] = [d for d in dirs if not d.startswith('.')]
             for file in files:
                 if file.startswith('.'):
@@ -84,7 +79,6 @@ class GitWorker(QThread):
 
         self.progress_signal.emit(60, "Анализ файлов на дубликаты...")
 
-        # Копируем файлы во временный репо для сравнения
         copied_relative_paths = []
         for src_file in all_files:
             rel_path = os.path.relpath(src_file, self.source_dir)
@@ -93,7 +87,6 @@ class GitWorker(QThread):
             shutil.copy2(src_file, dest_path)
             copied_relative_paths.append(rel_path)
 
-        # Сверяем с Git через git diff
         self.files_to_add = []
         duplicates = []
 
@@ -129,11 +122,9 @@ class GitWorker(QThread):
         self.progress_signal.emit(85, "Сохранение README.md и индексация...")
         os.chdir(self.temp_dir)
 
-        # Записываем README
         with open("README.md", "w", encoding="utf-8") as f:
             f.write(self.readme_text)
 
-        # Индексируем файлы
         subprocess.run(["git", "add", "README.md"])
         for file in self.files_to_add:
             subprocess.run(["git", "add", file])
@@ -142,15 +133,30 @@ class GitWorker(QThread):
         commit_msg = f"Авто-пуш: добавлены/обновлены файлы проекта {datetime.now().strftime('%Y-%m-%d %H:%M')}"
         subprocess.run(["git", "commit", "-m", commit_msg], capture_output=True)
 
-        self.progress_signal.emit(95, "Синхронизация веток и отправка...")
+        self.progress_signal.emit(95, "Синхронизация и отправка через GitHub CLI...")
+
+        # Получаем токен авторизации напрямую из gh cli
+        token_res = subprocess.run(["gh", "auth", "token"], capture_output=True, text=True)
+        token = token_res.stdout.strip()
+
+        if not token:
+            raise Exception("Не удалось получить токен авторизации из GitHub CLI!")
+
+        # Перезаписываем URL удаленного репозитория, внедряя в него токен авторизации.
+        # Это гарантирует, что Git сможет запушить файлы без каких-либо внешних хелперов.
+        auth_url = f"https://oauth2:{token}@github.com/{self.chosen_repo}.git"
+        subprocess.run(["git", "remote", "set-url", "origin", auth_url])
+
+        # Подтягиваем изменения
         subprocess.run(["git", "pull", "origin", "main", "--allow-unrelated-histories", "--no-rebase", "-X", "ours", "--quiet"], capture_output=True)
 
+        # Пушим напрямую с авторизованным URL
         push_res = subprocess.run(["git", "push", "origin", "main"], capture_output=True)
         if push_res.returncode != 0:
             self.status_signal.emit("Обычный пуш отклонен. Пробиваем через Force...")
             force_res = subprocess.run(["git", "push", "origin", "main", "--force"], capture_output=True)
             if force_res.returncode != 0:
-                raise Exception("Ошибка отправки даже через Force!")
+                raise Exception("Ошибка отправки! Сервер отклонил Force Push.")
 
         self.progress_signal.emit(100, "Всё готово!")
         self.finished_signal.emit(True, f"Изменения успешно отправлены в {self.chosen_repo}!")
@@ -160,21 +166,18 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("GitHub Auto-Push Manager")
-        self.resize(700, 500) # Крупное масштабируемое стартовое окно
+        self.resize(700, 500)
 
         self.script_path = os.path.realpath(__file__)
         self.source_dir = os.path.dirname(self.script_path)
 
-        # Стек виджетов для переключения шагов внутри одного окна
         self.stacked_widget = QStackedWidget()
         self.setCentralWidget(self.stacked_widget)
 
-        # Инициализация страниц
         self.init_repo_selection_page()
         self.init_loading_page()
         self.init_readme_page()
 
-        # Инициализация фонового воркера
         self.worker = GitWorker(self.source_dir, self.script_path)
         self.worker.status_signal.connect(self.update_status_label)
         self.worker.repos_loaded_signal.connect(self.on_repos_loaded)
@@ -183,7 +186,6 @@ class MainWindow(QMainWindow):
         self.worker.need_readme_signal.connect(self.open_readme_editor)
         self.worker.finished_signal.connect(self.on_finished)
 
-        # Запускаем загрузку репозиториев
         self.worker.start()
 
     def init_repo_selection_page(self):
@@ -273,7 +275,7 @@ class MainWindow(QMainWindow):
     def start_sync(self):
         self.worker.chosen_repo = self.repo_combo.currentText()
         self.worker.action = "clone_and_analyze"
-        self.stacked_widget.setCurrentIndex(1) # Переключаем на страницу загрузки
+        self.stacked_widget.setCurrentIndex(1)
         self.worker.start()
 
     def update_progress(self, val, text):
@@ -287,12 +289,12 @@ class MainWindow(QMainWindow):
 
     def open_readme_editor(self, text):
         self.readme_edit.setPlainText(text)
-        self.stacked_widget.setCurrentIndex(2) # Переключаем на встроенный блокнот
+        self.stacked_widget.setCurrentIndex(2)
 
     def submit_readme(self):
         self.worker.readme_text = self.readme_edit.toPlainText()
         self.worker.action = "final_push"
-        self.stacked_widget.setCurrentIndex(1) # Обратно на страницу загрузки
+        self.stacked_widget.setCurrentIndex(1)
         self.worker.start()
 
     def on_finished(self, success, message):
@@ -301,10 +303,9 @@ class MainWindow(QMainWindow):
             self.close()
         else:
             QMessageBox.critical(self, "Ошибка", f"Произошла ошибка:\n\n{message}")
-            self.stacked_widget.setCurrentIndex(0) # Возвращаем на первый экран
+            self.stacked_widget.setCurrentIndex(0)
 
     def closeEvent(self, event):
-        # Подчищаем временную папку при закрытии
         if self.worker.temp_dir and os.path.exists(self.worker.temp_dir):
             shutil.rmtree(self.worker.temp_dir)
         event.accept()
