@@ -43,37 +43,34 @@ has_cookies = os.path.exists(COOKIES_FILE)
 
 def download_media_sync(url: str, output_path: str) -> dict:
     """
-    Скачивание видео и принудительное транскодирование в совместимый с iOS формат.
+    Оптимизированное скачивание медиа без тяжелой склейки и перекодирования для работы на Render Free.
     """
     ydl_opts = {
-        'format': 'bestvideo[vcodec^=avc1]+bestaudio[acodec^=mp4a]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-        'merge_output_format': 'mp4',
+        # Скачиваем сразу готовый MP4 со звуком, избегая прожорливой склейки видео и звука
+        'format': 'best[ext=mp4]/best',
         'outtmpl': output_path,
         'quiet': True,
         'no_warnings': True,
-        'postprocessors': [{
-            'key': 'FFmpegVideoConvertor',
-            'preferedformat': 'mp4',
-        }],
-        # Жестко пережимаем видео в H.264 YUV420p и звук в AAC для стабильного воспроизведения на iPhone
-        'postprocessor_args': {
-            'video_convertor': ['-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-profile:v', 'high', '-level:v', '4.0', '-c:a', 'aac'],
-            'merger': ['-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-profile:v', 'high', '-level:v', '4.0', '-c:a', 'aac']
-        },
+        'noplaylist': True,
+        # Ограничиваем размер чанка загрузки до 1 МБ, чтобы данные не копились в ОЗУ сервера
+        'http_chunk_size': 1048576, 
     }
 
     if os.path.exists(COOKIES_FILE):
         ydl_opts['cookiefile'] = COOKIES_FILE
 
-    logger.info(f"Starting download sync with yt-dlp for URL: {url}")
+    logger.info(f"Starting optimized download sync with yt-dlp for URL: {url}")
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=True)
-        filename = ydl.prepare_filename(info)
-        base, _ = os.path.splitext(filename)
-        actual_filename = base + ".mp4"
+        actual_filename = ydl.prepare_filename(info)
 
-        if not os.path.exists(actual_filename) and os.path.exists(filename):
-            actual_filename = filename
+        # Подстраховка на случай, если расширение файла в итоге отличается от ожидаемого
+        if not os.path.exists(actual_filename):
+            base, _ = os.path.splitext(actual_filename)
+            for ext in ['.mp4', '.mkv', '.webm']:
+                if os.path.exists(base + ext):
+                    actual_filename = base + ext
+                    break
 
         if not os.path.exists(actual_filename):
             raise FileNotFoundError("Downloaded file could not be located on disk.")

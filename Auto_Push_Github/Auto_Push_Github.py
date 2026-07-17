@@ -5,8 +5,8 @@ import subprocess
 import tempfile
 import shutil
 from datetime import datetime
-from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
-                             QHBoxLayout, QLabel, QComboBox, QPushButton,
+from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
+                             QHBoxLayout, QLabel, QComboBox, QPushButton, 
                              QTextEdit, QProgressBar, QStackedWidget, QMessageBox)
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QFont
@@ -28,7 +28,8 @@ class GitWorker(QThread):
         self.temp_dir = ""
         self.files_to_add = []
         self.readme_text = ""
-        self.default_branch = "main"  # Определится динамически
+        self.default_branch = "main"
+        self.create_subfolder = True  # Флаг создания изолированной папки
 
     def run(self):
         try:
@@ -45,7 +46,7 @@ class GitWorker(QThread):
         self.status_signal.emit("Получение списка репозиториев...")
         if shutil.which("gh") is None:
             raise Exception("GitHub CLI (gh) не установлен в системе!")
-
+        
         auth_check = subprocess.run(["gh", "auth", "status"], capture_output=True, text=True)
         if auth_check.returncode != 0:
             raise Exception("Вы не авторизованы в GitHub CLI. Запустите в терминале 'gh auth login'.")
@@ -57,7 +58,7 @@ class GitWorker(QThread):
     def clone_and_analyze(self):
         self.progress_signal.emit(10, f"Клонирование {self.chosen_repo}...")
         self.temp_dir = tempfile.mkdtemp(prefix="git-push-py-")
-
+        
         # Клонируем через gh
         clone_res = subprocess.run(["gh", "repo", "clone", self.chosen_repo, self.temp_dir, "--", "--depth", "1", "--quiet"], capture_output=True)
         if clone_res.returncode != 0:
@@ -87,18 +88,29 @@ class GitWorker(QThread):
             raise Exception("В папке со скриптом нет файлов для отправки!")
 
         self.progress_signal.emit(60, "Анализ файлов на дубликаты...")
-
+        
+        # Получаем имя текущей папки на ПК (например, 'tg-downloader-bot')
+        current_folder_name = os.path.basename(os.path.abspath(self.source_dir))
+        
         copied_relative_paths = []
         for src_file in all_files:
             rel_path = os.path.relpath(src_file, self.source_dir)
-            dest_path = os.path.join(self.temp_dir, rel_path)
+            
+            # Проверяем, выбрал ли пользователь создание изолированной подпапки
+            if self.create_subfolder:
+                dest_path = os.path.join(self.temp_dir, current_folder_name, rel_path)
+                git_rel_path = os.path.join(current_folder_name, rel_path)
+            else:
+                dest_path = os.path.join(self.temp_dir, rel_path)
+                git_rel_path = rel_path
+            
             os.makedirs(os.path.dirname(dest_path), exist_ok=True)
             shutil.copy2(src_file, dest_path)
-            copied_relative_paths.append(rel_path)
+            copied_relative_paths.append(git_rel_path)
 
         self.files_to_add = []
         duplicates = []
-
+        
         for rel_path in copied_relative_paths:
             show_check = subprocess.run(["git", "show", f"HEAD:{rel_path}"], cwd=self.temp_dir, capture_output=True)
             if show_check.returncode == 0:
@@ -128,7 +140,7 @@ class GitWorker(QThread):
 
     def final_push(self):
         self.progress_signal.emit(85, "Сохранение README.md и индексация...")
-
+        
         readme_path = os.path.join(self.temp_dir, "README.md")
         with open(readme_path, "w", encoding="utf-8") as f:
             f.write(self.readme_text)
@@ -142,26 +154,26 @@ class GitWorker(QThread):
         subprocess.run(["git", "commit", "-m", commit_msg], cwd=self.temp_dir, capture_output=True)
 
         self.progress_signal.emit(95, "Авторизация и безопасная отправка...")
-
+        
         token_res = subprocess.run(["gh", "auth", "token"], capture_output=True, text=True)
         token = token_res.stdout.strip()
-
+        
         if not token:
             raise Exception("Не удалось получить токен авторизации из GitHub CLI!")
 
         auth_url = f"https://oauth2:{token}@github.com/{self.chosen_repo}.git"
         subprocess.run(["git", "remote", "set-url", "origin", auth_url], cwd=self.temp_dir)
 
-        # Конфигурируем имя/почту автора коммита локально во временной папке
+        # Подставляем данные пользователя локально в изолированном окружении
         subprocess.run(["git", "config", "user.name", "DemianTatarinov"], cwd=self.temp_dir)
         subprocess.run(["git", "config", "user.email", "demiantatarynau@icloud.com"], cwd=self.temp_dir)
-
-        # Стягиваем изменения, автоматически выбирая локальную версию при конфликтах
+        
+        # Безопасный Pull с флагами автообъединения в пользу локальных файлов
         subprocess.run(["git", "pull", "origin", self.default_branch, "--rebase=false", "-X", "ours", "--quiet"], cwd=self.temp_dir, capture_output=True)
-
-        # Стандартная безопасная отправка без флага Force
+        
+        # Стандартный безопасный пуш без флага --force
         push_res = subprocess.run(["git", "push", "origin", self.default_branch], cwd=self.temp_dir, capture_output=True, text=True)
-
+        
         if push_res.returncode != 0:
             error_details = push_res.stderr if push_res.stderr else "Неизвестная ошибка Git"
             raise Exception(f"GitHub отклонил отправку:\n{error_details}")
@@ -175,7 +187,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("GitHub Auto-Push Manager")
         self.resize(700, 500)
-
+        
         self.script_path = os.path.realpath(__file__)
         self.source_dir = os.path.dirname(self.script_path)
 
@@ -260,7 +272,7 @@ class MainWindow(QMainWindow):
         cancel_btn.setFont(QFont("Arial", 11))
         cancel_btn.setMinimumHeight(40)
         cancel_btn.clicked.connect(self.close)
-
+        
         self.push_btn = QPushButton("Сохранить и отправить на GitHub 🚀")
         self.push_btn.setFont(QFont("Arial", 11, QFont.Weight.Bold))
         self.push_btn.setMinimumHeight(40)
@@ -283,6 +295,25 @@ class MainWindow(QMainWindow):
 
     def start_sync(self):
         self.worker.chosen_repo = self.repo_combo.currentText()
+        current_folder_name = os.path.basename(os.path.abspath(self.source_dir))
+        
+        # Запрашиваем структуру перед анализом файлов
+        reply = QMessageBox.question(
+            self, 
+            "Структура репозитория", 
+            f"Хотите создать отдельную папку '{current_folder_name}' внутри репозитория?\n\n"
+            "• Нажмите 'Да', чтобы изолировать файлы проекта в этой папке.\n"
+            "• Нажмите 'Нет', чтобы выгрузить файлы прямо в корень.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.Yes
+        )
+        
+        # Передаем выбор структуры в рабочий поток
+        if reply == QMessageBox.StandardButton.Yes:
+            self.worker.create_subfolder = True
+        else:
+            self.worker.create_subfolder = False
+
         self.worker.action = "clone_and_analyze"
         self.stacked_widget.setCurrentIndex(1)
         self.worker.start()
@@ -293,7 +324,7 @@ class MainWindow(QMainWindow):
 
     def show_duplicates_dialog(self, duplicates):
         dup_list = "\n".join([f"• {d}" for d in duplicates])
-        QMessageBox.information(self, "Обнаружены дубликаты",
+        QMessageBox.information(self, "Обнаружены дубликаты", 
                                 f"Следующие файлы уже есть на GitHub и не изменились:\n\n{dup_list}\n\nОни будут пропущены.")
 
     def open_readme_editor(self, text):
