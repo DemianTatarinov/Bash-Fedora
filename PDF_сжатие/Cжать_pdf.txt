@@ -1,0 +1,1 @@
+gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="ИМЯ ФАЙЛА ПОСЛЕ СЖАТИЯ.pdf" "ЗАМЕНИ НА ИМЯ ФАЙЛА.pdf"
